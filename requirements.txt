@@ -1,1 +1,2 @@
 nasdaq-data-link
+pandas_gbq
