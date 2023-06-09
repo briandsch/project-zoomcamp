@@ -48,9 +48,3 @@ for code, name in merging_columns.items():
     new_column.columns=[f"{name}"]
     bitcoin = bitcoin.merge(new_column, on="Date")
     print(f"{code}: {name} has been added to the Dataframe.")
-
-
-# %%
-bitcoin
-
-
