@@ -1,17 +1,16 @@
-# %%
 import nasdaqdatalink
 import pandas as pd
 import functools as ft
 
-# %%
-start_date = '2022-05-01'
+start_date = ''
+end_date = ''
 
-# %%
-bitcoin = nasdaqdatalink.get('BCHAIN/MKPRU', start_date=start_date)
+# Gathers the data into a DataFrame for the dates specified above
+bitcoin = nasdaqdatalink.get('BCHAIN/MKPRU', start_date=start_date, end_date=end_date)
 bitcoin.columns=["Price_USD"]
 print("MKPRU: Price_USD has been added to the Dataframe.")
 
-# %%
+# Dictionary with column identifiers and names, to use for merging
 merging_columns = {
 "ETRAV": "Transaction_Volume",
 "ETRVU": "Transaction_Volume_USD",
@@ -33,15 +32,9 @@ merging_columns = {
 "MIREV": "Miners_Revenue"
 }
 
-# %%
+# For-loop to merge all the columns into one DataFrame
 for code, name in merging_columns.items():
     new_column = nasdaqdatalink.get(f'BCHAIN/{code}', start_date=start_date)
     new_column.columns=[f"{name}"]
     bitcoin = bitcoin.merge(new_column, on="Date")
     print(f"{code}: {name} has been added to the Dataframe.")
-
-
-# %%
-bitcoin
-
-

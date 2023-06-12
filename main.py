@@ -5,6 +5,7 @@ import pandas_gbq
 def update_to_gcp():
     from daily_update import bitcoin
 
+    # See "upload_to_gcp.py"
     bitcoin = bitcoin.reset_index()
     schema = [{"name": "Date", "type": "DATE"}]
 
@@ -12,6 +13,7 @@ def update_to_gcp():
 
     pandas_gbq.to_gbq(bitcoin, "bitcoin_data.bitcoin_table", "project-zoomcamp", if_exists="append", table_schema=schema)
 
+# Default function from Google's Cloud Functions tool
 def hello_pubsub(event, context):
     """Triggered from a message on a Cloud Pub/Sub topic.
     Args:

@@ -1,26 +1,20 @@
-# %%
 import nasdaqdatalink
 import pandas as pd
 import functools as ft
 
-# %%
 from datetime import date, timedelta
 
-# %%
+# To get yesterday's date
 start_date = date.today() - timedelta(days=1)
 
-# %%
+# Transforms the date to a string to be used by the API
 start_date = start_date.strftime("%Y-%m-%d")
 
-# %%
-start_date
-
-# %%
+# From here on, it's the same as extraction.py
 bitcoin = nasdaqdatalink.get('BCHAIN/MKPRU', start_date=start_date)
 bitcoin.columns=["Price_USD"]
 print("MKPRU: Price_USD has been added to the Dataframe.")
 
-# %%
 merging_columns = {
 "ETRAV": "Transaction_Volume",
 "ETRVU": "Transaction_Volume_USD",
@@ -42,7 +36,6 @@ merging_columns = {
 "MIREV": "Miners_Revenue"
 }
 
-# %%
 for code, name in merging_columns.items():
     new_column = nasdaqdatalink.get(f'BCHAIN/{code}', start_date=start_date)
     new_column.columns=[f"{name}"]
