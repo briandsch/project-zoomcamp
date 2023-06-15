@@ -4,14 +4,16 @@ import functools as ft
 
 from datetime import date, timedelta
 
-# To get yesterday's date
+# To get yesterday's dates
 start_date = date.today() - timedelta(days=1)
+end_date = date.today() - timedelta(days=1)
 
-# Transforms the date to a string to be used by the API
+# Transforms the dates to a string to be used by the API
 start_date = start_date.strftime("%Y-%m-%d")
+end_date = end_date.strftime("%Y-%m-%d")
 
 # From here on, it's the same as extraction.py
-bitcoin = nasdaqdatalink.get('BCHAIN/MKPRU', start_date=start_date)
+bitcoin = nasdaqdatalink.get('BCHAIN/MKPRU', start_date=start_date, end_date=end_date)
 bitcoin.columns=["Price_USD"]
 print("MKPRU: Price_USD has been added to the Dataframe.")
 
@@ -37,7 +39,7 @@ merging_columns = {
 }
 
 for code, name in merging_columns.items():
-    new_column = nasdaqdatalink.get(f'BCHAIN/{code}', start_date=start_date)
+    new_column = nasdaqdatalink.get(f'BCHAIN/{code}', start_date=start_date, end_date=end_date)
     new_column.columns=[f"{name}"]
-    bitcoin = bitcoin.merge(new_column, on="Date")
+    bitcoin = bitcoin.merge(new_column, on="Date", how="outer")
     print(f"{code}: {name} has been added to the Dataframe.")

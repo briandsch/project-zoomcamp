@@ -1,9 +1,12 @@
 import nasdaqdatalink
 import pandas as pd
 import functools as ft
+from datetime import date, timedelta
+
+end_date = date.today() - timedelta(days=1)
 
 start_date = ''
-end_date = ''
+# end_date = ''
 
 # Gathers the data into a DataFrame for the dates specified above
 bitcoin = nasdaqdatalink.get('BCHAIN/MKPRU', start_date=start_date, end_date=end_date)
@@ -34,7 +37,7 @@ merging_columns = {
 
 # For-loop to merge all the columns into one DataFrame
 for code, name in merging_columns.items():
-    new_column = nasdaqdatalink.get(f'BCHAIN/{code}', start_date=start_date)
+    new_column = nasdaqdatalink.get(f'BCHAIN/{code}', start_date=start_date, end_date=end_date)
     new_column.columns=[f"{name}"]
-    bitcoin = bitcoin.merge(new_column, on="Date")
+    bitcoin = bitcoin.merge(new_column, on="Date", how="outer")
     print(f"{code}: {name} has been added to the Dataframe.")
