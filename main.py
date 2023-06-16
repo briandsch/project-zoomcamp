@@ -3,7 +3,7 @@ import pandas as pd
 import pandas_gbq
 
 def update_to_gcp():
-    from daily_update import bitcoin
+    from daily_extraction import bitcoin
 
     # See "upload_to_gcp.py"
     bitcoin = bitcoin.reset_index()

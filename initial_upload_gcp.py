@@ -1,7 +1,7 @@
 import pandas as pd
 import pandas_gbq
 
-from extraction import bitcoin
+from initial_extraction import bitcoin
 
 # To set the DataFrame index as a regular column
 bitcoin = bitcoin.reset_index()
