@@ -3,6 +3,8 @@ This is a simple Bitcoin data pipeline which extracts the data from the Nasdaq D
 
 Besides the initial extraction of all the data, I've deployed another Python script in GCP using Pub/Sub, Google Cloud Functions and Google Cloud Scheduler to automatically update the table every day with data for the previous day.
 
+I've called this "Project-zoomcamp" as this is my first data pipeline after completing the [Data Engineering Zoomcamp by DataTalksClub](https://github.com/DataTalksClub/data-engineering-zoomcamp). I take the opportunity to give thanks to them for putting together such a well explained and comprehensive course; I definitely learned a lot from it, despite me deciding to start off with a rather simple data pipeline compared to what they covered in the course.
+
 ## Tools I'm using
 - WSL running Ubuntu 22.04
 - Conda 22.9.0 with Python 3.10.6
@@ -61,7 +63,7 @@ For this, I'm using Google's Cloud Scheduler, Pub/Sub and Cloud Functions.
     
         ![Cloud function creation](/images/Cloud_function_1.jpg)
 
-    - Then, I uploaded a zip file containing main.py, daily_extraction.py and requirements.txt to a GCP bucket.
+    - Then, I uploaded a zip file containing `main.py`, `daily_extraction.py` and `requirements.txt` to a GCP bucket.
     
         ![Cloud function code upload](/images/Cloud_function_2.jpg)
 
@@ -74,3 +76,15 @@ For this, I'm using Google's Cloud Scheduler, Pub/Sub and Cloud Functions.
     ![Cloud Scheduler](/images/Cloud_Scheduler.jpg)
 
 Cloud Scheduler publishes a Pub/Sub message on a desired schedule. This message gets published to the Pub/Sub topic. This topic then triggers the cloud function and executes the script that I deployed.
+
+## SQL Scripts
+There is a period of time in the column `Confirmation_Time_Minutes` where there are null values on two out of every three days. Given how consistent this pattern is, along with the fact that the values are null, I assume that there was an issue during this period when this data was being generated or collected. 
+
+To approximate, and to avoid the graph looking bad, I've decided to use the `last_value()` function to smooth things out by filling in the blanks with the last existing value. I've first created a view using this function, and then on a separate script, I've merged this view with the main table.
+
+## Google Looker Studio
+I have created a [Google Looker Studio report](https://lookerstudio.google.com/reporting/15ac012e-02e0-4c87-a454-44e75ace4b87/page/A46UD) to display all the data. Given that for this project I'm only using Bitcoin data, there are many charts and controls that I can't meaningfully use.
+
+On page 1, I made a very simple dashboard to show recent price data.
+
+On page 2, I created a chart for each different metric with a date control at the top to easily compare how each metric progressed over the same selected period of time.
