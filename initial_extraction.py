@@ -35,7 +35,7 @@ merging_columns = {
 "MIREV": "Miners_Revenue"
 }
 
-# For-loop to merge all the columns into one DataFrame
+# For-loop to gather and merge all the columns into one DataFrame
 for code, name in merging_columns.items():
     new_column = nasdaqdatalink.get(f'BCHAIN/{code}', start_date=start_date, end_date=end_date)
     new_column.columns=[f"{name}"]

@@ -4,7 +4,7 @@ import functools as ft
 
 from datetime import date, timedelta
 
-# To get yesterday's dates
+# To get yesterday's dates. These could also be set for any desired range for manual runs
 start_date = date.today() - timedelta(days=1)
 end_date = date.today() - timedelta(days=1)
 
@@ -12,7 +12,7 @@ end_date = date.today() - timedelta(days=1)
 start_date = start_date.strftime("%Y-%m-%d")
 end_date = end_date.strftime("%Y-%m-%d")
 
-# From here on, it's the same as extraction.py
+# From here onwards, it's the same as extraction.py
 bitcoin = nasdaqdatalink.get('BCHAIN/MKPRU', start_date=start_date, end_date=end_date)
 bitcoin.columns=["Price_USD"]
 print("MKPRU: Price_USD has been added to the Dataframe.")
