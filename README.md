@@ -35,18 +35,18 @@ I've called this "Project-zoomcamp" as this is my first data pipeline after comp
 
 4. I created a Nasdaq Data Link account on https://data.nasdaq.com/sign-up and obtained my free API key.
 
-5. On the home directory in WSL, I ran `nano .bashrc` to open the .bashrc file and then I pasted the following:
+5. On the home directory in WSL, I ran `nano .bashrc` to open the .bashrc file and then I added the following line:
     ```
     export NASDAQ_DATA_LINK_APY_KEY='MY_API_KEY'
     ```
-    This sets the environment variable that will hold the API key.
+    Needless to say, "MY_API_KEY" needs to be replaced with the actual key. This sets the environment variable that will hold the API key.
 
 6. I've created a new project in GCP and set up the necessary IAM permissions, along with enabling and setting up each tool mentioned before as needed. The region settings I've selected are based on their free tier as detailed here: https://cloud.google.com/free/docs/free-cloud-features
 
 ## Initial extraction run
-1. While on the main project directory, I run: 
+1. With the terminal on the main project directory, I run: 
     ```
-    python3 initial_upload.py
+    python3 initial_upload_gcp.py
     ```
     This will extract all the data from the API up to the previous day, and upload it to a BigQuery table.
 
@@ -61,15 +61,15 @@ For this, I'm using Google's Cloud Scheduler, Pub/Sub and Cloud Functions.
 
     - I created a new function called "btc-daily-update" using the Pub/Sub topic I created as the trigger. I also added the environment variable with the API key.
     
-        ![Cloud function creation](/images/Cloud_function_1.jpg)
+        ![Cloud function creation](/images/Cloud_Function_1.jpg)
 
-    - Then, I uploaded a zip file containing `main.py`, `daily_extraction.py` and `requirements.txt` to a GCP bucket.
+    - I uploaded a zip file containing `main.py`, `daily_extraction.py` and `requirements.txt` to a GCP bucket to then select it for my function.
     
-        ![Cloud function code upload](/images/Cloud_function_2.jpg)
+        ![Cloud function code upload](/images/Cloud_Function_2.jpg)
 
     - Lastly, I deployed the code to create the cloud function.
     
-        ![Cloud function deployment](/images/Cloud_function_3.jpg)
+        ![Cloud function deployment](/images/Cloud_Function_3.jpg)
 
 3. I created a job in Cloud Scheduler to send a message to the Pub/Sub topic on a cron schedule.
 
@@ -78,7 +78,7 @@ For this, I'm using Google's Cloud Scheduler, Pub/Sub and Cloud Functions.
 Cloud Scheduler publishes a Pub/Sub message on a desired schedule. This message gets published to the Pub/Sub topic. This topic then triggers the cloud function and executes the script that I deployed.
 
 ## SQL Scripts
-There is a period of time in the column `Confirmation_Time_Minutes` where there are null values on two out of every three days. Given how consistent this pattern is, along with the fact that the values are null, I assume that there was an issue during this period when this data was being generated or collected. 
+There is a period of time in the column `Confirmation_Time_Minutes` where there are null values on two out of every three days. Given how consistent this pattern is, along with the fact that the values are null, I assume that there was an issue during this period when this data was being either generated or collected. 
 
 To approximate, and to avoid the graph looking bad, I've decided to use the `last_value()` function to smooth things out by filling in the blanks with the last existing value. I've first created a view using this function, and then on a separate script, I've merged this view with the main table.
 

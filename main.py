@@ -5,8 +5,9 @@ import pandas_gbq
 def update_to_gcp():
     from daily_extraction import bitcoin
 
-    # See "upload_to_gcp.py"
+    # See "daily_upload_gcp.py"
     bitcoin = bitcoin.reset_index()
+
     schema = [{"name": "Date", "type": "DATE"}]
 
     bitcoin = bitcoin.convert_dtypes()
@@ -22,6 +23,7 @@ def hello_pubsub(event, context):
     """
     pubsub_message = base64.b64decode(event['data']).decode('utf-8')
     print(pubsub_message)
+
     update_to_gcp()
 
 if __name__ == "__main__":
